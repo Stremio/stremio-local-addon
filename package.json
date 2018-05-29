@@ -1,0 +1,30 @@
+{
+  "name": "stremio-local-addon",
+  "version": "1.0.0",
+  "description": "Local add-on to find playable files: .torrent, .mp4, .mkv and .avi",
+  "main": "index.js",
+  "dependencies": {
+    "stremio-addon-sdk": "^0.2.2"
+  },
+  "devDependencies": {
+    "tape": "^4.9.0"
+  },
+  "scripts": {
+    "test": "tape test/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stremio/stremio-local-addon.git"
+  },
+  "keywords": [
+    "stremio",
+    "local",
+    "bittorrent"
+  ],
+  "author": "Smart Code OOD",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Stremio/stremio-local-addon/issues"
+  },
+  "homepage": "https://github.com/Stremio/stremio-local-addon#readme"
+}
