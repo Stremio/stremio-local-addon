@@ -1,4 +1,5 @@
 const addonSDK = require('stremio-addon-sdk')
+const fetch = require('node-fetch')
 
 const pkg = require('./package')
 
@@ -25,6 +26,9 @@ const addon = new addonSDK({
 
 // Constants
 const PAGE_SIZE = 100
+const ENGINE_URL = 'http://127.0.0.1:11470'
+
+const mapTorrentToMeta = require('./lib/mapTorrentToMeta')
 
 addon.defineCatalogHandler(function(args, cb) {
 	// @TODO
@@ -34,6 +38,19 @@ addon.defineCatalogHandler(function(args, cb) {
 
 addon.defineMetaHandler(function(args, cb) {
 	// @TODO
+	// if args.id begins with 'bt:'
+	var ih = args.id.slice(3)
+
+	fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
+	.then(function(resp) { return resp.json() })
+	.then(function(resp) {
+		// @TODO: this response is not compatible with our mapTorrentToMeta in that there's no 'name' 
+		mapTorrentToMeta(resp, function(err, meta) {
+			if (err) return cb(err)
+			cb(null, { meta: meta })
+		})
+	})
+	.catch(cb)
 })
 
 addon.run()
