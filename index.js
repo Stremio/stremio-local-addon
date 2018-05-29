@@ -2,12 +2,6 @@ const addonSDK = require('stremio-addon-sdk')
 
 const pkg = require('./package')
 
-const findFiles = require('./lib/findFiles')
-
-findFiles().on('file', function(fPath) {
-	console.log(fPath)
-})
-
 // Define the addon
 const addon = new addonSDK({
 	id: 'org.stremio.local',
@@ -40,5 +34,16 @@ addon.defineMetaHandler(function(args, cb) {
 	// @TODO
 })
 
-
 addon.run()
+
+// Start indexing
+// @TODO: indexer, queue
+const findFiles = require('./lib/findFiles')
+
+findFiles().on('file', function(fPath) {
+	if (fPath.match('\.torrent$')) indexTorrent(fPath)
+})
+
+function indexTorrent(fPath) {
+	console.log(fPath)
+}
