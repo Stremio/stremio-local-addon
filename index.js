@@ -39,11 +39,11 @@ addon.run()
 // Start indexing
 // @TODO: indexer, queue
 const findFiles = require('./lib/findFiles')
+const indexer = require('./lib/indexer')
 
 findFiles().on('file', function(fPath) {
-	if (fPath.match('\.torrent$')) indexTorrent(fPath)
-})
+	// @TODO: consider promise
+	indexer.indexFile(fPath, function(err, res) {
 
-function indexTorrent(fPath) {
-	console.log(fPath)
-}
+	})
+})
