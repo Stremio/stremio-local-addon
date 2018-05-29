@@ -15,7 +15,7 @@ const addon = new addonSDK({
 	resources: ['catalog', 'meta'],
 	types: ['movie', 'series', 'other'],
 
-	idProperty: ['local:', 'bittorrent:'],
+	idPrefixes: ['local:', 'bittorrent:'],
 
 	// @TODO: search?
 	catalogs: [
@@ -39,6 +39,8 @@ addon.defineCatalogHandler(function(args, cb) {
 addon.defineMetaHandler(function(args, cb) {
 	// @TODO
 	// if args.id begins with 'bt:'
+	console.log(args)
+
 	var ih = args.id.slice(3)
 
 	fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
