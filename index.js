@@ -28,6 +28,8 @@ const PAGE_SIZE = 100
 
 addon.defineCatalogHandler(function(args, cb) {
 	// @TODO
+	// @TODO: return a catalog of all indexed items, sorted by last indexed
+	// an item id would either be local:tt<imdbId> or local:bt:IH
 })
 
 addon.defineMetaHandler(function(args, cb) {
