@@ -2,6 +2,12 @@ const addonSDK = require('stremio-addon-sdk')
 
 const pkg = require('./package')
 
+const findFiles = require('./lib/findFiles')
+
+findFiles().on('file', function(fPath) {
+	console.log(fPath)
+})
+
 // Define the addon
 const addon = new addonSDK({
 	id: 'org.stremio.local',
@@ -19,14 +25,13 @@ const addon = new addonSDK({
 	// @TODO: search?
 	catalogs: [
 		{ type: 'movie', id: 'local' },
-		{ type: 'series', id: 'locla' }
+		{ type: 'series', id: 'local' }
 	]
 })
 
 // Constants
 const PAGE_SIZE = 100
 
-// takes function(type, id, cb)
 addon.defineCatalogHandler(function(args, cb) {
 	// @TODO
 })
