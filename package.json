@@ -5,7 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "byline": "^5.0.0",
+    "name-to-imdb": "^2.0.1",
+    "parse-torrent": "^6.0.1",
     "stremio-addon-sdk": "^0.2.2",
+    "video-name-parser": "^1.4.6",
     "which": "^1.3.1"
   },
   "devDependencies": {
