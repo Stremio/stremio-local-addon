@@ -15,7 +15,7 @@ const addon = new addonSDK({
 	resources: ['catalog', 'meta'],
 	types: ['movie', 'series', 'other'],
 
-	idPrefixes: ['local:', 'bittorrent:'],
+	idPrefixes: ['local:', 'bt:'],
 
 	// @TODO: search?
 	catalogs: [
@@ -28,6 +28,8 @@ const addon = new addonSDK({
 const PAGE_SIZE = 100
 const ENGINE_URL = 'http://127.0.0.1:11470'
 
+const BT_PREFIX = 'bt:'
+
 const mapTorrentToMeta = require('./lib/mapTorrentToMeta')
 
 addon.defineCatalogHandler(function(args, cb) {
@@ -39,20 +41,23 @@ addon.defineCatalogHandler(function(args, cb) {
 addon.defineMetaHandler(function(args, cb) {
 	// @TODO
 	// if args.id begins with 'bt:'
-	console.log(args)
 
-	var ih = args.id.slice(3)
+	if (args.id.indexOf(BT_PREFIX) === 0) {
+		var ih = args.id.slice(BT_PREFIX.length)
 
-	fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
-	.then(function(resp) { return resp.json() })
-	.then(function(resp) {
-		// @TODO: this response is not compatible with our mapTorrentToMeta in that there's no 'name' 
-		mapTorrentToMeta(resp, function(err, meta) {
-			if (err) return cb(err)
-			cb(null, { meta: meta })
+		fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
+		.then(function(resp) { return resp.json() })
+		.then(function(resp) {
+			// @TODO: this response is not compatible with our mapTorrentToMeta in that there's no 'name' 
+			mapTorrentToMeta(resp, function(err, meta) {
+				if (err) return cb(err)
+				cb(null, { meta: meta })
+			})
 		})
-	})
-	.catch(cb)
+		.catch(cb)
+	} else {
+		// @TODO
+	}
 })
 
 addon.run()
