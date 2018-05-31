@@ -32,7 +32,9 @@ const PREFIX_BT = 'bt:'
 const PREFIX_LOCAL = 'local:'
 
 const mapTorrentToMeta = require('./lib/mapTorrentToMeta')
-const storage = require('./lib/storage')
+const Storage = require('./lib/storage')
+
+const storage = new Storage()
 
 addon.defineCatalogHandler(function(args, cb) {
 	// @TODO
