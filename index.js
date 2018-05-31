@@ -28,9 +28,11 @@ const addon = new addonSDK({
 const PAGE_SIZE = 100
 const ENGINE_URL = 'http://127.0.0.1:11470'
 
-const BT_PREFIX = 'bt:'
+const PREFIX_BT = 'bt:'
+const PREFIX_LOCAL = 'local:'
 
 const mapTorrentToMeta = require('./lib/mapTorrentToMeta')
+const storage = require('./lib/storage')
 
 addon.defineCatalogHandler(function(args, cb) {
 	// @TODO
@@ -42,8 +44,10 @@ addon.defineMetaHandler(function(args, cb) {
 	// @TODO
 	// if args.id begins with 'bt:'
 
-	if (args.id.indexOf(BT_PREFIX) === 0) {
-		var ih = args.id.slice(BT_PREFIX.length)
+	// @TODO: try cache first, then if not found, try 'bt:' via enginefs 
+
+	if (args.id.indexOf(PREFIX_BT) === 0) {
+		var ih = args.id.slice(PREFIX_BT.length)
 
 		fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
 		.then(function(resp) { return resp.json() })
@@ -60,16 +64,28 @@ addon.defineMetaHandler(function(args, cb) {
 	}
 })
 
+// @TODO: stremio-addon-sdk should have a .getRouter() method to be usable in another express server
+// Start the add-on
 addon.run()
 
-// Start indexing
-// @TODO: indexer, queue
-const findFiles = require('./lib/findFiles')
-const indexer = require('./lib/indexer')
+// NOTE: storage.load just loads existing records from the fs
+// we don't need to wait for it in order to use the storage, so we don't wait for it
+// to start the add-on and we don't consider it fatal if it fails
+storage.load(function(err) {
+	if (err) console.log(err)
 
-findFiles().on('file', function(fPath) {
-	// @TODO: consider promise
-	indexer.indexFile(fPath, function(err, res) {
+	// Start indexing
 
+	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects (an array of files)
+	// Indexing: 
+
+	const findFiles = require('./lib/findFiles')
+	const indexer = require('./lib/indexer')
+
+	findFiles().on('file', function(fPath) {
+		// @TODO: consider promise
+		indexer.indexFile(fPath, function(err, res) {
+
+		})
 	})
 })
