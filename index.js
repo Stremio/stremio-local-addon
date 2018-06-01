@@ -31,8 +31,11 @@ const ENGINE_URL = 'http://127.0.0.1:11470'
 const PREFIX_BT = 'bt:'
 const PREFIX_LOCAL = 'local:'
 
-const mapTorrentToMeta = require('./lib/mapTorrentToMeta')
+// Internal modules
+const mapEntryToMeta = require('./lib/mapEntryToMeta')
 const Storage = require('./lib/storage')
+const findFiles = require('./lib/findFiles')
+const indexer = require('./lib/indexer')
 
 const storage = new Storage()
 
@@ -54,10 +57,10 @@ addon.defineMetaHandler(function(args, cb) {
 		fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
 		.then(function(resp) { return resp.json() })
 		.then(function(resp) {
-			// @TODO: this response is not compatible with our mapTorrentToMeta in that there's no 'name' 
-			mapTorrentToMeta(resp, function(err, meta) {
+			indexer.indexParsedTorrent(resp, function(err, entry) {
 				if (err) return cb(err)
-				cb(null, { meta: meta })
+				if (!entry) return cb(new Error('internal err: no entry from indexParsedTorrent'))
+				cb(null, { meta: mapEntryToMeta(entry) })
 			})
 		})
 		.catch(cb)
@@ -83,15 +86,12 @@ storage.load('./localFiles', function(err) {
 	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects (an array of files)
 	// Indexing: 
 
-	const findFiles = require('./lib/findFiles')
-	const indexer = require('./lib/indexer')
-
 	findFiles().on('file', function(fPath) {
 		if (storage.byFilePath.has(fPath)) {
 			console.log('-> '+fPath+' already indexed')
 			return
 		}
-		
+
 		// @TODO: consider promise
 		indexer.indexFile(fPath, function(err, res) {
 			if (err) {
