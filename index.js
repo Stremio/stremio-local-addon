@@ -19,8 +19,7 @@ const addon = new addonSDK({
 
 	// @TODO: search?
 	catalogs: [
-		{ type: 'movie', id: 'local' },
-		{ type: 'series', id: 'local' }
+		{ type: 'other', id: 'local' },
 	]
 })
 
@@ -33,6 +32,7 @@ const PREFIX_LOCAL = 'local:'
 
 // Internal modules
 const mapEntryToMeta = require('./lib/mapEntryToMeta')
+const mapToCatalog = require('./lib/mapToCatalog')
 const Storage = require('./lib/storage')
 const findFiles = require('./lib/findFiles')
 const indexer = require('./lib/indexer')
@@ -40,19 +40,19 @@ const indexer = require('./lib/indexer')
 const storage = new Storage()
 
 addon.defineCatalogHandler(function(args, cb) {
-	// @TODO
-	// @TODO: return a catalog of all indexed items, sorted by last indexed
-	// an item id would either be local:tt<imdbId> or local:bt:IH
+	mapToCatalog(storage, args, cb)
 })
 
 addon.defineMetaHandler(function(args, cb) {
 	const entry = storage.getAggrEntry(args.id)
 
 	if (entry) {
+		// Saved entry is found
 		mapEntryToMeta(entry, function(err, meta) {
 			cb(err, meta ? { meta: meta } : null)
 		})
 	} else if (args.id.indexOf(PREFIX_BT) === 0) {
+		// Saved entr is not found, but we can make an entry from a torrent
 		getNonIndexedTorrent(args.id.slice(PREFIX_BT.length), cb)
 	} else {
 		cb(new Error('entry not found'))
@@ -66,21 +66,19 @@ addon.run()
 // NOTE: storage.load just loads existing records from the fs
 // we don't need to wait for it in order to use the storage, so we don't wait for it
 // to start the add-on and we don't consider it fatal if it fails
-
 // @TODO: proper path
 storage.load('./localFiles', function(err) {
 	if (err) console.log(err)
 
 	// Start indexing
-
-	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects (an array of files)
-	// Indexing: turns a filePath into an entry { id, filePath, itemId, files, ih }
-
 	findFiles().on('file', onDiscoveredFile)
 })
 
 function onDiscoveredFile(fPath) {
 	indexLog(fPath, 'discovered')
+
+	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects
+	// Indexing: turns a filePath into an entry { id, filePath, itemId, files, ih }
 
 	if (storage.byFilePath.has(fPath)) {
 		indexLog(fPath, 'already indexed')
