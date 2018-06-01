@@ -73,7 +73,9 @@ addon.run()
 // NOTE: storage.load just loads existing records from the fs
 // we don't need to wait for it in order to use the storage, so we don't wait for it
 // to start the add-on and we don't consider it fatal if it fails
-storage.load(function(err) {
+
+// @TODO: path
+storage.load('./localFiles', function(err) {
 	if (err) console.log(err)
 
 	// Start indexing
@@ -85,9 +87,21 @@ storage.load(function(err) {
 	const indexer = require('./lib/indexer')
 
 	findFiles().on('file', function(fPath) {
+		if (storage.byFilePath.has(fPath)) {
+			console.log('-> '+fPath+' already indexed')
+			return
+		}
+		
 		// @TODO: consider promise
 		indexer.indexFile(fPath, function(err, res) {
+			if (err) {
+				console.log(err)
+				return
+			}
 
+			if (res) storage.saveEntry(fPath, res, function(err) {
+				if (err) console.log(err)
+			})
 		})
 	})
 })
