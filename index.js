@@ -60,7 +60,10 @@ addon.defineMetaHandler(function(args, cb) {
 			indexer.indexParsedTorrent(resp, function(err, entry) {
 				if (err) return cb(err)
 				if (!entry) return cb(new Error('internal err: no entry from indexParsedTorrent'))
-				cb(null, { meta: mapEntryToMeta(entry) })
+
+				mapEntryToMeta(entry, function(err, meta) {
+					cb(err, meta ? { meta: meta } : null)
+				})
 			})
 		})
 		.catch(cb)
