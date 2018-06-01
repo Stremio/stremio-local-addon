@@ -50,7 +50,7 @@ tape('meta - bittorrent - recognized item', function(t) {
 	.then(function(resp) {
 		t.ok(resp.meta)
 		t.equals(resp.meta.type, 'series', 'recognized as series')
-		t.equals(resp.meta.imdb_id, 'tt1748166', 'recognized as pionner one')
+		t.equals(resp.meta.imdb_id, 'tt1748166', 'recognized as pioneer one')
 		t.ok(Array.isArray(resp.meta.videos), 'has videos')
 
 		t.end()
