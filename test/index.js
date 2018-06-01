@@ -1,1 +1,2 @@
+require('./storage')
 require('./addon')
