@@ -27,11 +27,15 @@ tape('storage: can load an empty storage', function(t) {
 
 
 function checkAllData(t, storage) {
-	t.equals(storage.byFilePath.size, 2)
+	t.equals(storage.byFilePath.size, 3)
 	t.equals(storage.byFilePath.get('/file/test1').itemId, 'test1')
 	t.equals(storage.byFilePath.get('/file/test2').itemId, 'test2')
-	t.deepEqual(storage.byItemId.get('test1').get('/file/test1'),
-		 { itemId: 'test1', files: [{ path: '/file/test1' }] }
+	t.equals(storage.byFilePath.get('/file/test2-2').itemId, 'test2')
+	t.deepEqual(storage.byItemId.get('test2').get('/file/test2'),
+		 { itemId: 'test2', files: [{ path: '/file/test2', name: 'test\nt' }] }
+	)
+	t.deepEqual(storage.byItemId.get('test2').get('/file/test2-2'),
+		 { itemId: 'test2', files: [{ path: '/file/test2-2', name: 'test\nt\nt' }] }
 	)
 }
 
@@ -39,10 +43,20 @@ tape('storage: can persist', function(t) {
 	storage1.saveEntry('/file/test1', { itemId: 'test1', files: [{ path: '/file/test1' }] }, function(err) {
 		t.error(err)
 
+		let pending = 2
 		storage1.saveEntry('/file/test2', { itemId: 'test2', files: [{ path: '/file/test2', name: 'test\nt' }] }, function(err) {
 			t.error(err)
-			checkAllData(t, storage1)
-			t.end()
+			if (--pending === 0) {
+				checkAllData(t, storage1)
+				t.end()
+			}
+		})
+		storage1.saveEntry('/file/test2-2', { itemId: 'test2', files: [{ path: '/file/test2-2', name: 'test\nt\nt' }] }, function(err) {
+			t.error(err)
+			if (--pending === 0) {
+				checkAllData(t, storage1)
+				t.end()
+			}
 		})
 	})
 })
