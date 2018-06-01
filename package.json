@@ -17,7 +17,8 @@
     "tape": "^4.9.0"
   },
   "scripts": {
-    "test": "node test/index"
+    "test": "node test/index",
+    "start": "node index"
   },
   "repository": {
     "type": "git",
