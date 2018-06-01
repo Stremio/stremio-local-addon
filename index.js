@@ -46,27 +46,16 @@ addon.defineCatalogHandler(function(args, cb) {
 })
 
 addon.defineMetaHandler(function(args, cb) {
+	const entry = storage.getAggrEntry(args.id)
 
-	// @TODO: try cache first, then if not found, try 'bt:' via enginefs 
-
-	if (args.id.indexOf(PREFIX_BT) === 0) {
-		var ih = args.id.slice(PREFIX_BT.length)
-
-		fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
-		.then(function(resp) { return resp.json() })
-		.then(function(resp) {
-			indexer.indexParsedTorrent(resp, function(err, entry) {
-				if (err) return cb(err)
-				if (!entry) return cb(new Error('internal err: no entry from indexParsedTorrent'))
-
-				mapEntryToMeta(entry, function(err, meta) {
-					cb(err, meta ? { meta: meta } : null)
-				})
-			})
+	if (entry) {
+		mapEntryToMeta(entry, function(err, meta) {
+			cb(err, meta ? { meta: meta } : null)
 		})
-		.catch(cb)
+	} else if (args.id.indexOf(PREFIX_BT) === 0) {
+		getNonIndexedTorrent(args.id.slice(PREFIX_BT.length), cb)
 	} else {
-		// @TODO
+		cb(new Error('entry not found'))
 	}
 })
 
@@ -113,4 +102,20 @@ function onDiscoveredFile(fPath) {
 
 function indexLog(fPath, status) {
 	console.log('-> '+fPath+': '+status)
+}
+
+function getNonIndexedTorrent(ih, cb) {
+	fetch(ENGINE_URL+'/'+ih+'/create', { method: 'POST' })
+	.then(function(resp) { return resp.json() })
+	.then(function(resp) {
+		indexer.indexParsedTorrent(resp, function(err, entry) {
+			if (err) return cb(err)
+			if (!entry) return cb(new Error('internal err: no entry from indexParsedTorrent'))
+
+			mapEntryToMeta(entry, function(err, meta) {
+				cb(err, meta ? { meta: meta } : null)
+			})
+		})
+	})
+	.catch(cb)
 }
