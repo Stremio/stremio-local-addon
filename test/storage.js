@@ -31,12 +31,19 @@ function checkAllData(t, storage) {
 	t.equals(storage.byFilePath.get('/file/test1').itemId, 'test1')
 	t.equals(storage.byFilePath.get('/file/test2').itemId, 'test2')
 	t.equals(storage.byFilePath.get('/file/test2-2').itemId, 'test2')
+
+	const f2 = { path: '/file/test2', name: 'test\nt' }
+	const f22 = { path: '/file/test2-2', name: 'test\nt\nt' }
 	t.deepEqual(storage.byItemId.get('test2').get('/file/test2'),
-		 { itemId: 'test2', files: [{ path: '/file/test2', name: 'test\nt' }] }
+		 { itemId: 'test2', files: [f2] }
 	)
 	t.deepEqual(storage.byItemId.get('test2').get('/file/test2-2'),
-		 { itemId: 'test2', files: [{ path: '/file/test2-2', name: 'test\nt\nt' }] }
+		 { itemId: 'test2', files: [f22] }
 	)
+	t.deepEqual(storage.getAggrEntry('test2'), {
+		itemId: 'test2',
+		files: [f2, f22]
+	})
 }
 
 tape('storage: can persist', function(t) {
