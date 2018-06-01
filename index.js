@@ -46,8 +46,6 @@ addon.defineCatalogHandler(function(args, cb) {
 })
 
 addon.defineMetaHandler(function(args, cb) {
-	// @TODO
-	// if args.id begins with 'bt:'
 
 	// @TODO: try cache first, then if not found, try 'bt:' via enginefs 
 
@@ -80,31 +78,39 @@ addon.run()
 // we don't need to wait for it in order to use the storage, so we don't wait for it
 // to start the add-on and we don't consider it fatal if it fails
 
-// @TODO: path
+// @TODO: proper path
 storage.load('./localFiles', function(err) {
 	if (err) console.log(err)
 
 	// Start indexing
 
 	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects (an array of files)
-	// Indexing: 
+	// Indexing: turns a filePath into an entry { id, filePath, itemId, files, ih }
 
-	findFiles().on('file', function(fPath) {
-		if (storage.byFilePath.has(fPath)) {
-			console.log('-> '+fPath+' already indexed')
+	findFiles().on('file', onDiscoveredFile)
+})
+
+function onDiscoveredFile(fPath) {
+	indexLog(fPath, 'discovered')
+
+	if (storage.byFilePath.has(fPath)) {
+		indexLog(fPath, 'already indexed')
+		return
+	}
+
+	indexer.indexFile(fPath, function(err, entry) {
+		if (err) {
+			indexLog(fPath, 'indexing error: '+(err.message || err))
 			return
 		}
 
-		// @TODO: consider promise
-		indexer.indexFile(fPath, function(err, res) {
-			if (err) {
-				console.log(err)
-				return
-			}
-
-			if (res) storage.saveEntry(fPath, res, function(err) {
-				if (err) console.log(err)
-			})
+		if (entry) storage.saveEntry(fPath, entry, function(err) {
+			if (err) console.log(err)
+			else indexLog(fPath, 'is now indexed: '+entry.itemId)
 		})
 	})
-})
+}
+
+function indexLog(fPath, status) {
+	console.log('-> '+fPath+': '+status)
+}
