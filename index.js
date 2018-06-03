@@ -93,7 +93,7 @@ function onDiscoveredFile(fPath) {
 
 		if (entry) storage.saveEntry(fPath, entry, function(err) {
 			if (err) console.log(err)
-			else indexLog(fPath, 'is now indexed: '+entry.itemId)
+			else indexLog(fPath, 'is now indexed: '+(entry.itemId ? entry.itemId : 'non-interesting (no itemId)'))
 		})
 	})
 }
