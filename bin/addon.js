@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
-const addon = require('..')
+const localAddon = require('..')
 
-addon.run()
+localAddon.addon.run()
+
+// @TODO: proper path
+localAddon.startIndexing('./localFiles')

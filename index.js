@@ -59,16 +59,17 @@ addon.defineMetaHandler(function(args, cb) {
 	}
 })
 
-// NOTE: storage.load just loads existing records from the fs
-// we don't need to wait for it in order to use the storage, so we don't wait for it
-// to start the add-on and we don't consider it fatal if it fails
-// @TODO: proper path
-storage.load('./localFiles', function(err) {
-	if (err) console.log(err)
+function startIndexing(fPath) {
+	// NOTE: storage.load just loads existing records from the fs
+	// we don't need to wait for it in order to use the storage, so we don't wait for it
+	// to start the add-on and we don't consider it fatal if it fails
+	storage.load(fPath, function(err) {
+		if (err) console.log(err)
 
-	// Start indexing
-	findFiles().on('file', onDiscoveredFile)
-})
+		// Start indexing
+		findFiles().on('file', onDiscoveredFile)
+	})
+}
 
 function onDiscoveredFile(fPath) {
 	indexLog(fPath, 'discovered')
@@ -114,4 +115,4 @@ function getNonIndexedTorrent(ih, cb) {
 	.catch(cb)
 }
 
-module.exports = addon
+module.exports = { addon, startIndexing }
