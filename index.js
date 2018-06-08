@@ -59,10 +59,6 @@ addon.defineMetaHandler(function(args, cb) {
 	}
 })
 
-// @TODO: stremio-addon-sdk should have a .getRouter() method to be usable in another express server
-// Start the add-on
-addon.run()
-
 // NOTE: storage.load just loads existing records from the fs
 // we don't need to wait for it in order to use the storage, so we don't wait for it
 // to start the add-on and we don't consider it fatal if it fails
@@ -117,3 +113,5 @@ function getNonIndexedTorrent(ih, cb) {
 	})
 	.catch(cb)
 }
+
+module.exports = addon
