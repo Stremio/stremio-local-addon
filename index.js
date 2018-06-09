@@ -71,6 +71,10 @@ function startIndexing(fPath) {
 	})
 }
 
+function setEngineUrl(url) {
+	ENGINE_URL = url
+}
+
 function onDiscoveredFile(fPath) {
 	indexLog(fPath, 'discovered')
 
@@ -115,4 +119,4 @@ function getNonIndexedTorrent(ih, cb) {
 	.catch(cb)
 }
 
-module.exports = { addon, startIndexing }
+module.exports = { addon, startIndexing, setEngineUrl }
