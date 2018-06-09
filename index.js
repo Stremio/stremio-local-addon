@@ -48,7 +48,7 @@ addon.defineMetaHandler(function(args, cb) {
 
 	if (entry) {
 		// Saved entry is found
-		mapEntryToMeta(entry, function(err, meta) {
+		mapEntryToMeta(ENGINE_URL, entry, function(err, meta) {
 			cb(err, meta ? { meta: meta } : null)
 		})
 	} else if (args.id.indexOf(PREFIX_BT) === 0) {
@@ -111,7 +111,7 @@ function getNonIndexedTorrent(ih, cb) {
 			if (err) return cb(err)
 			if (!entry) return cb(new Error('internal err: no entry from indexParsedTorrent'))
 
-			mapEntryToMeta(entry, function(err, meta) {
+			mapEntryToMeta(ENGINE_URL, entry, function(err, meta) {
 				cb(err, meta ? { meta: meta } : null)
 			})
 		})
