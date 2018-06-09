@@ -5,7 +5,7 @@ const pkg = require('./package')
 
 // Constants
 const PAGE_SIZE = 100
-const ENGINE_URL = 'http://127.0.0.1:11470'
+let ENGINE_URL = 'http://127.0.0.1:11470'
 
 const PREFIX_BT = 'bt:'
 const PREFIX_LOCAL = 'local:'
