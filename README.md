@@ -8,3 +8,10 @@ It does a few things:
 * Tries to recognize video files as entertainment content and associate them with an IMDB ID
 * Presents a `catalog` to Stremio containing all the found items, where IMDB-recognized video files are grouped by IMDB ID and torrents are grouped by BitTorrent infohash; non-recognized video files are omitted
 * Allows Stremio to open any BitTorrent infoHash using `/meta/bt:<infoHash>` request to this add-on
+
+
+## Testing 
+
+``PORT=1222 npm start``
+
+``npm test``
