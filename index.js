@@ -7,6 +7,7 @@ let engineUrl = 'http://127.0.0.1:11470'
 const manifest = require('./lib/manifest')
 const catalogHandler = require('./lib/catalogHandler')
 const metaHandler = require('./lib/metaHandler')
+const streamHandler = require('./lib/streamHandler')
 const Storage = require('./lib/storage')
 const findFiles = require('./lib/findFiles')
 const indexer = require('./lib/indexer')
@@ -23,6 +24,10 @@ addon.defineCatalogHandler(function(args, cb) {
 
 addon.defineMetaHandler(function(args, cb) {
 	metaHandler(storage, engineUrl, args, cb)
+})
+
+addon.defineStreamHandler(function(args, cb) {
+	streamHandler(storage, args, cb)
 })
 
 // Exported methods

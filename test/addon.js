@@ -63,3 +63,6 @@ tape('meta - bittorrent - recognized item', function(t) {
 		t.end()
 	})
 })
+
+
+// @TODO: stream resource test
