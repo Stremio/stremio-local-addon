@@ -22,6 +22,13 @@ The reason `files` is an array is that one file on the filesystem may contain mu
 
 `itemId` is the stremio metadata ID this entry corresponds to.
 
+It may be formed in two ways:
+
+`bt:<bittorrent info hash>`
+
+`local:<IMDB ID>`
+
+In other words, to make a single Stremio `MetaItem` object, files are grouped either by the torrent they belong in, or by the IMDB ID they are indexed by. So this add-on will only display videos either indexed by IMDB ID or belonging in a torrent.
 
 ## Storage
 
@@ -35,7 +42,7 @@ The in-memory structure is as follows
 
 `byItemId`: `itemId=>(filePath=>entry)`
 
-Finally, we have the `storage.getAggrEntry` function, which gives us an aggregate entry for an `itemId`, by taking all entries for the given `itemId` and merging them by concatting `files` and taking the leftmost values of the other properties (`name`, `ih`, `sources`).
+Finally, we have the `storage.getAggrEntry` function, which gives us an aggregate entry for an `itemId`, by taking all entries for the given `itemId` and merging them by concatting `files` and taking the leftmost values of the other properties (`name`, `ih`, `sources`). Taking the leftmost values is OK for torrents since `itemId` implies grouping by torrent anyway (in other words all `ih` and `sources` values will be the same).
 
 ## Testing
 
