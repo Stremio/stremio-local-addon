@@ -28,6 +28,19 @@ tape('initialize add-on', function(t) {
 
 })
 
+tape('catalog', function(t) {
+	addon.get('catalog', addon.manifest.catalogs[0].type, addon.manifest.catalogs[0].id)
+	.then(function(resp) {
+		t.ok(Array.isArray(resp.metas), 'resp has metas')
+		console.log(resp.metas)
+		t.end()
+	})
+	.catch(function(e) { 
+		t.error(e)
+		t.end()
+	})
+})
+
 tape('meta - bittorrent', function(t) {
 	addon.get('meta', 'other', 'bt:'+testIh)		
 	.then(function(resp) {
