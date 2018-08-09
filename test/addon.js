@@ -32,7 +32,6 @@ tape('catalog', function(t) {
 	addon.get('catalog', addon.manifest.catalogs[0].type, addon.manifest.catalogs[0].id)
 	.then(function(resp) {
 		t.ok(Array.isArray(resp.metas), 'resp has metas')
-		console.log(resp.metas)
 		t.end()
 	})
 	.catch(function(e) { 
