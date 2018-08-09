@@ -9,6 +9,11 @@ It does a few things:
 * Presents a `catalog` to Stremio containing all the found items, where IMDB-recognized video files are grouped by IMDB ID and torrents are grouped by BitTorrent infohash; non-recognized video files are omitted
 * Allows Stremio to open any BitTorrent infoHash using `/meta/bt:<infoHash>` request to this add-on
 
+## Testing
+
+``PORT=1222 npm start``
+
+``npm test``
 
 ## Data structure
 
@@ -43,9 +48,3 @@ The in-memory structure is as follows
 `byItemId`: `itemId=>(filePath=>entry)`
 
 Finally, we have the `storage.getAggrEntry` function, which gives us an aggregate entry for an `itemId`, by taking all entries for the given `itemId` and merging them by concatting `files` and taking the leftmost values of the other properties (`name`, `ih`, `sources`). Taking the leftmost values is OK for torrents since `itemId` implies grouping by torrent anyway (in other words all `ih` and `sources` values will be the same).
-
-## Testing
-
-``PORT=1222 npm start``
-
-``npm test``

@@ -14,6 +14,8 @@ tape('initialize add-on', function(t) {
 		t.ok(resp.addon, 'has addon')
 		t.ok(resp.addon.manifest.catalogs, 'has catalogs')
 		t.ok(resp.addon.manifest.catalogs.length, 'has catalogs length')
+		t.ok(resp.addon.manifest.idPrefixes.includes('bt:'), 'idPrefixes has bt:')
+		t.ok(resp.addon.manifest.idPrefixes.includes('local:'), 'idPrefixes has local:')
 
 		addon = resp.addon
 
@@ -29,7 +31,7 @@ tape('initialize add-on', function(t) {
 tape('meta - bittorrent', function(t) {
 	addon.get('meta', 'other', 'bt:'+testIh)		
 	.then(function(resp) {
-		t.ok(resp.meta)
+		t.ok(resp.meta, 'has meta')
 		t.equals(resp.meta.id, 'bt:'+testIh, 'id is correct')
 		t.ok(Array.isArray(resp.meta.videos), 'has videos')
 
