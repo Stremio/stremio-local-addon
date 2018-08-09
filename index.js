@@ -19,7 +19,7 @@ const storage = new Storage()
 const addon = new addonSDK(manifest)
 
 addon.defineCatalogHandler(function(args, cb) {
-	mapToCatalog(storage, args, cb)
+	catalogHandler(storage, args, cb)
 })
 
 addon.defineMetaHandler(function(args, cb) {
