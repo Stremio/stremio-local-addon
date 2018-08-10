@@ -11,7 +11,7 @@ It does a few things:
 
 ## Testing
 
-``PORT=1222 npm start``
+``npm start``
 
 ``npm test``
 

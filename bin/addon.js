@@ -2,6 +2,6 @@
 
 const localAddon = require('..')
 
-localAddon.addon.run()
+localAddon.addon.runHTTPWithOptions({ port: process.env.PORT || 1222 })
 
 localAddon.startIndexing('./localFiles')
