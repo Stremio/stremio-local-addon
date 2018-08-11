@@ -11,6 +11,7 @@ const streamHandler = require('./lib/streamHandler')
 const Storage = require('./lib/storage')
 const findFiles = require('./lib/findFiles')
 const indexer = require('./lib/indexer')
+const consts = require('./lib/consts')
 
 // Initiate the storage
 const storage = new Storage()
@@ -56,6 +57,11 @@ function onDiscoveredFile(fPath) {
 
 	if (storage.byFilePath.has(fPath)) {
 		indexLog(fPath, 'already indexed')
+		return
+	}
+
+	if (storage.byFilePath.size >= MAX_INDEXED) {
+		indexLog(fPath, 'will not index because of MAX_INDEXED exceeded')
 		return
 	}
 
