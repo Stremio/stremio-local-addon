@@ -13,6 +13,8 @@ const findFiles = require('./lib/findFiles')
 const indexer = require('./lib/indexer')
 const consts = require('./lib/consts')
 
+const MAX_INDEXED = 10000
+
 // Initiate the storage
 const storage = new Storage()
 
