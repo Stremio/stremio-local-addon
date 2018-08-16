@@ -1,6 +1,6 @@
 {
   "name": "stremio-local-addon",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Local add-on to find playable files: .torrent, .mp4, .mkv and .avi",
   "main": "index.js",
   "dependencies": {
