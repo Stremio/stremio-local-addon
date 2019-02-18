@@ -14,8 +14,9 @@ tape('initialize add-on', function(t) {
 		t.ok(resp.addon, 'has addon')
 		t.ok(resp.addon.manifest.catalogs, 'has catalogs')
 		t.ok(resp.addon.manifest.catalogs.length, 'has catalogs length')
-		t.ok(resp.addon.manifest.idPrefixes.includes('bt:'), 'idPrefixes has bt:')
-		t.ok(resp.addon.manifest.idPrefixes.includes('local:'), 'idPrefixes has local:')
+		const resource = resp.addon.manifest.resources.find(r => r.name === 'meta')
+		t.ok(resource.idPrefixes.includes('bt:'), 'idPrefixes has bt:')
+		t.ok(resource.idPrefixes.includes('local:'), 'idPrefixes has local:')
 
 		addon = resp.addon
 
