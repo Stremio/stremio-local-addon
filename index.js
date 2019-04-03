@@ -52,18 +52,14 @@ function startIndexing(fPath) {
 
 // Internal methods
 function onDiscoveredFile(fPath) {
-	indexLog(fPath, 'discovered')
-
 	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects
 	// Indexing: turns a filePath into an entry { id, filePath, itemId, files, ih }
 
 	if (storage.byFilePath.has(fPath)) {
-		indexLog(fPath, 'already indexed')
 		return
 	}
 
 	if (storage.byFilePath.size >= MAX_INDEXED) {
-		indexLog(fPath, 'will not index because of MAX_INDEXED exceeded')
 		return
 	}
 
@@ -75,7 +71,7 @@ function onDiscoveredFile(fPath) {
 
 		if (entry) storage.saveEntry(fPath, entry, function(err) {
 			if (err) console.log(err)
-			else indexLog(fPath, 'is now indexed: '+(entry.itemId ? entry.itemId : 'non-interesting (no itemId)'))
+			else if(entry.itemId) indexLog(fPath, 'is now indexed: '+entry.itemId)
 		})
 	})
 }
