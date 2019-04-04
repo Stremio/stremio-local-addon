@@ -51,7 +51,7 @@ function startIndexing(fPath) {
 }
 
 // Internal methods
-function onDiscoveredFile(fPath) {
+function onDiscoveredFile(fPath, propperties) {
 	// Storage: contains a hash map by filePath and another one by itemId; both point to entry objects
 	// Indexing: turns a filePath into an entry { id, filePath, itemId, files, ih }
 
@@ -69,6 +69,9 @@ function onDiscoveredFile(fPath) {
 			return
 		}
 
+		if(propperties && propperties.dateModified) {
+			entry.dateModified = propperties.dateModified
+		}
 		if (entry) storage.saveEntry(fPath, entry, function(err) {
 			if (err) console.log(err)
 			else if(entry.itemId) indexLog(fPath, 'is now indexed: '+entry.itemId)
