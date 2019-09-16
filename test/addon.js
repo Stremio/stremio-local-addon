@@ -64,9 +64,9 @@ tape('meta - bittorrent - recognized item', function(t) {
 	addon.get('meta', 'other', 'bt:'+testIhRecoginzed)		
 	.then(function(resp) {
 		t.ok(resp.meta, 'has meta')
-		t.equals(resp.meta.type, 'series', 'recognized as series')
+		t.equals(resp.meta.type, 'other', 'recognized as other')
 		t.equals(resp.meta.imdb_id, 'tt1748166', 'recognized as pioneer one')
-		t.equals(resp.meta.name, 'Pioneer One')
+		t.equals(resp.meta.name, 'Pioneer.One.S01E01.720p.x264-VODO')
 		t.ok(Array.isArray(resp.meta.videos), 'has videos')
 
 		t.end()
