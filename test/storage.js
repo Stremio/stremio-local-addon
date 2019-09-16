@@ -12,35 +12,38 @@ let storage1
 let storage2
 
 tape('storage: can construct', function(t) {
-	storage1 = new Storage()
+	storage1 = new Storage({entryIndexes: ['itemId']})
 	t.ok(storage1, 'object returned')
-	t.ok(storage1.byFilePath, 'byFilePath exists')
+	t.ok(storage1.indexes.primaryKey, 'indexes.primaryKey exists')
 	t.end()
 })
 
 tape('storage: can load an empty storage', function(t) {
-	storage1.load(tmpPath, function(err) {
+	storage1.load(tmpPath)
+	.catch(function(err) {
 		t.error(err)
+	})
+	.then(function(err) {
 		t.end()
 	})
 })
 
 
 function checkAllData(t, storage) {
-	t.equals(storage.byFilePath.size, 3)
-	t.equals(storage.byFilePath.get('/file/test1').itemId, 'test1')
-	t.equals(storage.byFilePath.get('/file/test2').itemId, 'test2')
-	t.equals(storage.byFilePath.get('/file/test2-2').itemId, 'test2')
+	t.equals(storage.indexes.primaryKey.size, 3)
+	t.equals(storage.indexes.primaryKey.get('/file/test1').itemId, 'test1')
+	t.equals(storage.indexes.primaryKey.get('/file/test2').itemId, 'test2')
+	t.equals(storage.indexes.primaryKey.get('/file/test2-2').itemId, 'test2')
 
 	const f2 = { path: '/file/test2', name: 'test\nt' }
 	const f22 = { path: '/file/test2-2', name: 'test\nt\nt' }
-	t.deepEqual(storage.byItemId.get('test2').get('/file/test2'),
+	t.deepEqual(storage.indexes.itemId.get('test2').get('/file/test2'),
 		 { itemId: 'test2', files: [f2] }
 	)
-	t.deepEqual(storage.byItemId.get('test2').get('/file/test2-2'),
+	t.deepEqual(storage.indexes.itemId.get('test2').get('/file/test2-2'),
 		 { itemId: 'test2', files: [f22] }
 	)
-	t.deepEqual(storage.getAggrEntry('test2'), {
+	t.deepEqual(storage.getAggrEntry('itemId', 'test2', ['files']), {
 		itemId: 'test2',
 		files: [f2, f22]
 	})
@@ -71,9 +74,12 @@ tape('storage: can persist', function(t) {
 
 
 tape('storage: can load', function(t) {
-	storage2 = new Storage()
-	storage2.load(tmpPath, function(err) {
+	storage2 = new Storage({entryIndexes: ['itemId']})
+	storage2.load(tmpPath)
+	.catch(function(err) {
 		t.error(err)
+	})
+	.then(function(err) {
 		checkAllData(t, storage2)
 		t.end()
 	})
