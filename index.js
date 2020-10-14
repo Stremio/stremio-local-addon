@@ -28,6 +28,7 @@ const metaStorage = new Storage()
 
 // Define the addon
 function addon(options) {
+	options = options || {}
 	const addonBuilder = new addonSDK(options.disableCatalogSupport ? manifestNoCatalogs : manifest)
 
 	addonBuilder.defineCatalogHandler(function(args, cb) {
