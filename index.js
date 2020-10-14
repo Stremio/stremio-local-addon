@@ -6,6 +6,7 @@ let engineUrl = 'http://127.0.0.1:11470'
 
 // Internal modules
 const manifest = require('./lib/manifest')
+const manifestNoCatalogs = require('./lib/manifestNoCatalogs')
 const catalogHandler = require('./lib/catalogHandler')
 const metaHandler = require('./lib/metaHandler')
 const streamHandler = require('./lib/streamHandler')
@@ -26,19 +27,22 @@ const storage = new Storage({
 const metaStorage = new Storage()
 
 // Define the addon
-const addon = new addonSDK(manifest)
+function addon(options) {
+	const addonBuilder = new addonSDK(options.disableCatalogSupport ? manifestNoCatalogs : manifest)
 
-addon.defineCatalogHandler(function(args, cb) {
-	catalogHandler(storage, metaStorage, args, cb)
-})
+	addonBuilder.defineCatalogHandler(function(args, cb) {
+		catalogHandler(storage, metaStorage, args, cb)
+	})
 
-addon.defineMetaHandler(function(args, cb) {
-	metaHandler(storage, metaStorage, engineUrl, args, cb)
-})
+	addonBuilder.defineMetaHandler(function(args, cb) {
+		metaHandler(storage, metaStorage, engineUrl, args, cb)
+	})
 
-addon.defineStreamHandler(function(args, cb) {
-	streamHandler(storage, args, cb)
-})
+	addonBuilder.defineStreamHandler(function(args, cb) {
+		streamHandler(storage, args, cb)
+	})
+	return addonBuilder;
+}
 
 // Exported methods
 function setEngineUrl(url) {
